@@ -1,0 +1,73 @@
+package iuh.fit.se.entities;
+
+import iuh.fit.se.enums.PhuongThucThanhToan;
+import iuh.fit.se.utils.SerializationUtils;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "HoaDons")
+public class HoaDon implements Serializable {
+    private static final long serialVersionUID = SerializationUtils.HOADON_SERIAL_VERSION_UID;
+
+    @Id
+    @EqualsAndHashCode.Include
+    @Column(name = "MaHD", nullable = false)
+    private String maHD;
+
+    @Column(name = "MaNV", nullable = false, insertable = false, updatable = false)
+    private String maNV;
+
+    @Column(name = "MaKH", nullable = true, insertable = false, updatable = false)
+    private String maKH;
+
+    @Column(name = "ThoiGian", nullable = false)
+    private LocalDateTime thoiGian;
+
+    @Column(name = "TongSoLuongSP")
+    private int tongSoLuongSP;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PhuongThucTT")
+    private PhuongThucThanhToan phuongThucTT;
+
+    @Column(name = "ThanhTien")
+    private double thanhTien;
+
+    public HoaDon(String maHD, String maNV, String maKH, LocalDateTime thoiGian, int tongSoLuongSP, PhuongThucThanhToan phuongThucTT, double thanhTien) {
+        this.maHD = maHD;
+        this.maNV = maNV;
+        this.maKH = maKH;
+        this.thoiGian = thoiGian;
+        this.tongSoLuongSP = tongSoLuongSP;
+        this.phuongThucTT = phuongThucTT;
+        this.thanhTien = thanhTien;
+    }
+
+    //check
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<ChiTietHoaDon_SanPham> chiTietHoaDonSanPhams = new HashSet<>();
+    //check
+    @ManyToOne
+    @JoinColumn(name = "MaNV", nullable = false)
+    private NhanVien nhanVien;
+    //check
+    @ManyToOne
+    @JoinColumn(name = "MaKH", nullable = false)
+    private KhachHang khachHang;
+    //check
+    @ManyToOne
+    @JoinColumn(name = "MaCa", nullable = false)
+    private CaLam caLam;
+}

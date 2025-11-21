@@ -1,0 +1,42 @@
+package iuh.fit.se.entities;
+
+import iuh.fit.se.utils.SerializationUtils;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "KhachHangs")
+public class KhachHang implements Serializable {
+    private static final long serialVersionUID = SerializationUtils.KHACHHANG_SERIAL_VERSION_UID;
+
+    @Id
+    @EqualsAndHashCode.Include
+    @Column(name = "MaKH", nullable = false)
+    private String maKH;
+
+    @Column(name = "TenKH", nullable = false)
+    private String tenKH;
+
+    @Column(name = "SDT", nullable = false)
+    private String sdt;
+
+    public KhachHang(String maKH, String tenKH, String sdt) {
+        this.maKH = maKH;
+        this.tenKH = tenKH;
+        this.sdt = sdt;
+    }
+
+    //check
+    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<HoaDon> hoaDons = new HashSet<>();
+}
